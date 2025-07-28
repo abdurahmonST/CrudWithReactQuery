@@ -1,22 +1,28 @@
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { useOneProduct } from "../hooks/useAllProducts";
+import type { ProductType } from "../services/fakeStore";
 
 const ProductDetail = () => {
-  const { id } = useParams<{ id: string }>();
-  const productId = Number(id);
+  const { id } = useParams();
+  const productId = id ? Number(id) : undefined;
   const { data: product, isLoading } = useOneProduct(productId);
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
-  if (!product) return <div className="p-6">Product not found.</div>;
+  if (isLoading) return <div style={{ padding: 24 }}>Loading...</div>;
+  if (!product) return <div style={{ padding: 24 }}>Product not found.</div>;
+
+  const p = product as ProductType;
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-      <p className="text-gray-700 mb-4">{product.description}</p>
-      <p className="text-amber-600 text-xl font-bold mb-2">${product.price}</p>
-      {/* Agar image bo‘lsa */}
-      {product.image && (
-        <img src={product.image} alt={product.title} className="w-full max-h-[400px] object-contain mt-4" />
+    <div style={{ padding: 24, maxWidth: 600, margin: "0 auto" }}>
+      <h1 style={{ fontSize: 28, fontWeight: "bold", marginBottom: 16 }}>{p.title}</h1>
+      <p style={{ marginBottom: 16 }}>{p.description}</p>
+      <p style={{ color: "#d97706", fontSize: 20, fontWeight: "bold", marginBottom: 8 }}>${p.price}</p>
+      {p.image && (
+        <img
+          src={p.image}
+          alt={p.title}
+          style={{ width: "100%", maxHeight: 400, objectFit: "contain", marginTop: 16 }}
+        />
       )}
     </div>
   );
